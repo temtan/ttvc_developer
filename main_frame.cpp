@@ -584,7 +584,7 @@ MainFrame::RegisterHandlers( void )
 
   // ƒwƒ‹ƒv
   this->AddCommandHandler( CommandID::VersionInformation, [this] ( int, HWND ) -> WMResult {
-    VersionDialog dialog;
+    VersionDialog dialog( developer_.GetSettings() );
     dialog.ShowDialog( *this );
     return {WMResult::Done};
   } );

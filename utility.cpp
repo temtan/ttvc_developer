@@ -18,6 +18,8 @@
 
 #include "utility.h"
 
+#pragma comment(lib, "Version.lib")
+
 using namespace TTVCDeveloper;
 
 
@@ -111,4 +113,46 @@ Utility::SetSourceFileFilters( TtFileDialog& dialog )
   dialog.GetFilters().push_back( {"リソーススクリプトファイル(*.rc)", "*.rc"} );
   dialog.GetFilters().push_back( {"すべてのファイル(*.*)", "*.*"} );
   dialog.SetFilterIndex( 5 );
+}
+
+
+std::string
+Utility::GetFirstProductVersionFromFile( const std::string& path )
+{
+  int ret;
+
+  DWORD dummy;
+  int size = ::GetFileVersionInfoSize( path.c_str(), &dummy );
+  if ( size == 0 ) {
+    return "";
+  }
+
+  TtString::UniqueString block( size );
+  ret = ::GetFileVersionInfo( path.c_str(), 0, block.GetCapacity(), block.GetPointer() );
+  if ( ret == 0 ) {
+    return "";
+  }
+
+  LPVOID translate_pointer;
+  UINT  translate_length;
+  ret = ::VerQueryValue( block.GetPointer(), "\\VarFileInfo\\Translation", &translate_pointer, &translate_length );
+  if ( ret == 0 || translate_length == 0 ) {
+    return "";
+  }
+
+  struct LANGANDCODEPAGE {
+    WORD language_;
+    WORD code_page_;
+  } *translate = static_cast<LANGANDCODEPAGE*>( translate_pointer );
+
+  char name[256];
+  sprintf_s( name, sizeof( name ), "\\StringFileInfo\\%04x%04x\\ProductVersion", translate[0].language_, translate[0].code_page_ );
+  LPVOID version;
+  UINT   version_length;
+  ret = ::VerQueryValue( block.GetPointer(), name, &version, &version_length );
+  if ( ret == 0 ) {
+    return "";
+  }
+
+  return static_cast<char*>( version );
 }

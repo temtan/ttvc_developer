@@ -19,4 +19,6 @@ namespace TTVCDeveloper::Utility {
   bool MakeDirectoryOfFileIfNotExist( const std::string& path );
 
   void SetSourceFileFilters( TtFileDialog& dialog );
+
+  std::string GetFirstProductVersionFromFile( const std::string& path );
 }

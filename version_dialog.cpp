@@ -1,18 +1,16 @@
 // version_dialog.cpp
 
 #include "common.h"
+#include "utility.h"
 
 #include "version_dialog.h"
 
 using namespace TTVCDeveloper;
 
 
-VersionDialog::VersionDialog( void ) :
-icon_( Image::ICONS[Image::Index::Main] ),
-name_label_(),
-version_label_(),
-date_label_(),
-close_button_()
+VersionDialog::VersionDialog( const Settings& settings ) :
+settings_( settings ),
+icon_( Image::ICONS[Image::Index::Main] )
 {
 }
 
@@ -33,15 +31,21 @@ VersionDialog::Created( void )
   version_label_.Create( {this} );
   date_label_.Create( {this} );
   close_button_.Create( {this, ButtonCommandID} );
+  compiler_label_.Create( {this} );
+  x86_version_label_.Create( {this} );
+  x64_version_label_.Create( {this} );
 
   this->SetText( "バージョン情報" );
 
-  this->SetClientSize( 254, 68, false );
+  this->SetClientSize( 254, 128, false );
 
-  name_label_.SetPositionSize(     60, 12, 100, 24 );
-  version_label_.SetPositionSize(  60, 28, 100, 24 );
-  date_label_.SetPositionSize(     60, 44, 200, 24 );
-  close_button_.SetPositionSize(  180, 12,  40, 24 );
+  name_label_.SetPositionSize(         60,  12, 100,  24 );
+  version_label_.SetPositionSize(      60,  28, 100,  24 );
+  date_label_.SetPositionSize(         60,  44, 200,  24 );
+  close_button_.SetPositionSize(      180,  12,  40,  24 );
+  compiler_label_.SetPositionSize(     60,  66, 200,  24 );
+  x86_version_label_.SetPositionSize(  60,  84, 200,  24 );
+  x64_version_label_.SetPositionSize(  60, 100, 200,  24 );
 
   name_label_.SetText( TTVCDeveloper::APPLICATION_NAME );
   version_label_.SetText( std::string( "version " ) + TTVCDeveloper::VERSION );
@@ -54,6 +58,9 @@ VersionDialog::Created( void )
     date_label_.SetText( date_str );
   }
   close_button_.SetText( "閉" );
+  compiler_label_.SetText( "コンパイラのバージョン" );
+  x86_version_label_.SetText( "x86 : " + Utility::GetFirstProductVersionFromFile( settings_.compiler_x86_.compiler_path_ ) );
+  x64_version_label_.SetText( "x64 : " + Utility::GetFirstProductVersionFromFile( settings_.compiler_x64_.compiler_path_ ) );
 
   this->AddCommandHandler( ButtonCommandID, [this] ( int, HWND ) -> WMResult {
     this->Close();
@@ -72,6 +79,9 @@ VersionDialog::Created( void )
   version_label_.Show();
   date_label_.Show();
   close_button_.Show();
+  compiler_label_.Show();
+  x86_version_label_.Show();
+  x64_version_label_.Show();
 
   close_button_.SetFocus();
 

@@ -17,10 +17,12 @@
 * squirrel ツリーアイテムダブルクリック時の動き
 * squirrel 出力画面ダブルクリック時の動き
 * squirrel ユーザ入力ダイアログを出して文字列取得する関数
-* VC++ のバージョンをバージョンダイアログに表示する
-  * http://www.ne.jp/asahi/hishidama/home/tech/vcpp/version.html
 * 外部プログラムへの標準入力をダイアログ表示で対応とか
   * モードレスウィンドウを出してそれから入力する方式かなー
+* 履歴の MAX の件
+  * 履歴に限界が設定無かったのでそれの設定を作るべし
 
 
+* VC++ のバージョンをバージョンダイアログに表示する ----- 済
+  * http://www.ne.jp/asahi/hishidama/home/tech/vcpp/version.html
 
