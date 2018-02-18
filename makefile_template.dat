@@ -1,0 +1,100 @@
+// makefile_template.dat
+
+static const std::string
+MAKEFILE_TEMPLATE = R"template(
+## by @@application_name@@ ver. @@application_version@@
+## c compiler ------------------------------------------------------------
+MAKE_DIR   = @@make_command_directory@@
+CC         = "@@compiler_path@@"
+LINK       = "@@linker_path@@"
+INCLUDES   = %%includes%%{ /I@@include@@ }%%includes%%
+DEFINES    = %%defines%%{ -D@@define@@ }%%defines%%
+NO_WARNING = %%no_warning%%{ /wd@@number@@ }%%no_warning%%
+CFLAGS     = @@compiler_flags@@ $(INCLUDES) $(DEFINES) $(NO_WARNING)
+
+ENV_INCLUDE = @@environment_variable_include@@
+ENV_LIB     = @@environment_variable_lib@@
+ENV_LIBPATH = @@environment_variable_libpath@@
+
+## resource compiler -----------------------------------------------------
+RC      = "@@resource_compiler_path@@"
+RCFLAGS = @@resource_compiler_flags@@
+
+## files -----------------------------------------------------------------
+TARGET = "@@target@@"
+
+%%files%%{
+SRC@@number@@ = "@@source_path@@"
+OBJ@@number@@ = "@@object_path@@"
+}%%files%%
+OBJ_ALL = %%obj_all%%{ $(OBJ@@number@@) }%%obj_all%%
+
+%%libs%%{
+LIB@@number@@ = @@lib_path@@
+}%%libs%%
+LIB_ALL = %%lib_all%%{ $(LIB@@number@@) }%%lib_all%%
+
+%%additional%%{
+ADD@@number@@ = @@target@@
+}%%additional%%
+ADD_ALL = %%additional_all%%{ $(ADD@@number@@) }%%additional_all%%
+ADD_CLEAN = %%additional_clean%%{ $(ADD@@number@@) }%%additional_clean%%
+
+PCH_SRC = %%precompiled_header_source%%{ "@@file@@" }%%precompiled_header_source%%
+PCH_HDR = %%precompiled_header_header%%{ "@@file@@" }%%precompiled_header_header%%
+PCH_OBJ = %%precompiled_header_object%%{ "@@file@@" }%%precompiled_header_object%%
+PCH_SRC_OBJ = %%precompiled_header_source_object%%{ $(OBJ@@number@@) }%%precompiled_header_source_object%%
+PCH_C_OPT = /Yc$(PCH_HDR) /Fp$(PCH_OBJ)
+PCH_U_OPT = /Yu$(PCH_OBJ) %%precompiled_header_force_include%%{ /FI$(PCH_OBJ) }%%precompiled_header_force_include%%
+
+
+## target link -----------------------------------------------------------
+TARGET : $(TARGET)
+
+$(TARGET) : env_set $(PCH_OBJ) $(OBJ_ALL) $(LIB_ALL) $(ADD_ALL)
+  $(LINK) /nologo @@sub_system@@ /OUT:$(TARGET) $(OBJ_ALL) $(LIB_ALL)
+
+build : TARGET
+
+rebuild : clean build
+
+clean : $(ADD_CLEAN)
+  del $(TARGET) $(OBJ_ALL) $(PCH_OBJ)
+
+
+## environment variables -------------------------------------------------
+env_set :
+  @set PATH=$(PATH);$(MAKE_DIR)
+  @set INCLUDE=$(ENV_INCLUDE)
+  @set LIB=$(ENV_LIB)
+  @set LIBPATH=$(ENV_LIBPATH)
+
+
+## compile ---------------------------------------------------------------
+%%file_compile%%{
+$(OBJ@@number@@) :: env_set
+$(OBJ@@number@@) :: $(SRC@@number@@)
+  $(CC) /c $(CFLAGS) %%precompiled_header_options%%{ $(PCH_U_OPT) }%%precompiled_header_options%% -Fo$(OBJ@@number@@) $(SRC@@number@@)
+}%%file_compile%%
+
+%%resource_compile%%{
+$(OBJ@@number@@) :: env_set
+$(OBJ@@number@@) :: $(SRC@@number@@)
+  $(RC) $(RCFLAGS) -Fo$(OBJ@@number@@) $(SRC@@number@@)
+}%%resource_compile%%
+
+%%precompiled_header_compile%%{
+$(PCH_OBJ) :: env_set
+$(PCH_OBJ) :: $(PCH_HDR) $(PCH_SRC)
+  $(CC) /c $(CFLAGS) $(PCH_C_OPT) /Fp$(PCH_OBJ) -Fo$(PCH_SRC_OBJ) $(PCH_SRC)
+
+$(PCH_SRC_OBJ) : $(PCH_OBJ)
+}%%precompiled_header_compile%%
+
+%%additional_compile%%{
+$(ADD@@number@@) :: %%depends%%{ @@file@@ }%%depends%%
+%%commands%%{  @@command@@
+}%%commands%%
+}%%additional_compile%%
+
+)template";

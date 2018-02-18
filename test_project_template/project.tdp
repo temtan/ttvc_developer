@@ -1,0 +1,31 @@
+[Project]
+Name=test_project
+UseIcon=0
+IconFilePath=\
+IconFileIndex=0
+Element1=test.cpp	1	0
+Element2=test.h	1	0
+Element3=test1.cpp	1	0
+Element4=project.tdp.nut	1	0
+[Structure0]
+Name=Release
+Platform=X86
+TargetKind=Console
+OutputDirectoryName=Release
+TargetName=target.exe
+TargetArgument=
+TargetCurrentDirectory=@@output_folder_path@@
+TargetUseOutputEdit=1
+OptimizeKind=Fastest
+RuntimeLibrary=Static
+UseException=1
+UsePrecompiledHeader=0
+PrecompiledHeaderSource=stdafx.cpp
+PrecompiledHeaderHeader=stdafx.h
+PrecompiledHeaderForceInclude=1
+WarningLevel=1
+ErrorIfWarning=0
+NoLogo=1
+CompilerOtherOption=
+ResourceCompilerOption=
+ExtensionScriptPath=.\project.tdp.nut
