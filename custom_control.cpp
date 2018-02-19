@@ -1,5 +1,7 @@
 // custom_control.cpp
 
+#include <regex>
+
 #include "ttl_define.h"
 #include "tt_string.h"
 #include "tt_message_box.h"
@@ -329,7 +331,9 @@ OutputEdit::AddText( const std::string& data )
 {
   int tmp = this->GetTextLength();
   this->SendMessage( EM_SETSEL, tmp, tmp );
-  this->SendMessage( EM_REPLACESEL, 0, reinterpret_cast<WPARAM>( data.c_str() ) );
+
+  std::string str = std::regex_replace( data, std::regex( "\\r?\\n" ), "\r\n" );
+  this->SendMessage( EM_REPLACESEL, 0, reinterpret_cast<WPARAM>( str.c_str() ) );
 }
 
 ProcessManager&
