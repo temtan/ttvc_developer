@@ -81,5 +81,8 @@ namespace TTVCDeveloper {
 
     // ‚»‚Ì‘¼
     std::string extension_script_path_;
+
+    // ‰B‚µ
+    unsigned int project_history_count_max_;
   };
 }

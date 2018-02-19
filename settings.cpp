@@ -39,6 +39,7 @@ namespace Tag {
   DEFINE_PARAMETER_NAME_STRING( ExecuteKey );
   DEFINE_PARAMETER_NAME_STRING( TreeUseOriginalIcon );
   DEFINE_PARAMETER_NAME_STRING( ExtensionScriptPath );
+  DEFINE_PARAMETER_NAME_STRING( ProjectHistoryCountMax );
 }
 
 
@@ -62,7 +63,9 @@ compiler_x64_(),
 editor_path_( "" ),
 editor_argument_( "" ),
 
-tree_use_original_icon_( true )
+tree_use_original_icon_( true ),
+
+project_history_count_max_( 15 )
 {
 }
 
@@ -112,10 +115,11 @@ Settings::ReadFromIniFile( TtIniFile& ini_file )
     compiler_get( compiler_x86_, Tag::X86 );
     compiler_get( compiler_x64_, Tag::X64 );
 
-    editor_path_            = section.GetString(  Tag::EditorPath,          ""   );
-    editor_argument_        = section.GetString(  Tag::EditorArgument,      ""   );
-    tree_use_original_icon_ = section.GetBoolean( Tag::TreeUseOriginalIcon, true );
-    extension_script_path_  = section.GetString(  Tag::ExtensionScriptPath, ""   );
+    editor_path_               = section.GetString(  Tag::EditorPath,             ""   );
+    editor_argument_           = section.GetString(  Tag::EditorArgument,         ""   );
+    tree_use_original_icon_    = section.GetBoolean( Tag::TreeUseOriginalIcon,    true );
+    extension_script_path_     = section.GetString(  Tag::ExtensionScriptPath,    ""   );
+    project_history_count_max_ = section.GetInteger( Tag::ProjectHistoryCountMax, 15 );
   }
 
   {
@@ -188,10 +192,11 @@ Settings::WriteToIniFile( TtIniFile& ini_file ) const
     compiler_set( compiler_x86_, Tag::X86 );
     compiler_set( compiler_x64_, Tag::X64 );
 
-    section.SetString(  Tag::EditorPath,          editor_path_            );
-    section.SetString(  Tag::EditorArgument,      editor_argument_        );
-    section.SetBoolean( Tag::TreeUseOriginalIcon, tree_use_original_icon_ );
-    section.SetString(  Tag::ExtensionScriptPath, extension_script_path_  );
+    section.SetString(  Tag::EditorPath,             editor_path_               );
+    section.SetString(  Tag::EditorArgument,         editor_argument_           );
+    section.SetBoolean( Tag::TreeUseOriginalIcon,    tree_use_original_icon_    );
+    section.SetString(  Tag::ExtensionScriptPath,    extension_script_path_     );
+    section.SetInteger( Tag::ProjectHistoryCountMax, project_history_count_max_ );
   }
 
   {

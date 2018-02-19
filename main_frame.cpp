@@ -221,7 +221,7 @@ MainFrame::RegisterHandlers( void )
     box.SetDefaultButton( TtMessageBox::DefautButton::SECOND );
     if ( box.ShowDialog( *this ) == TtMessageBox::Result::YES ) {
       project_history_.clear();
-      IniFileOperation::SaveProjectHistory( project_history_ );
+      IniFileOperation::SaveProjectHistory( project_history_, developer_.GetSettings().project_history_count_max_ );
       this->SetProjectHistory();
     }
     return {WMResult::Done};
@@ -1092,7 +1092,7 @@ MainFrame::ExecuteExternalProgram( Settings::ExternalProgram& external_program, 
 void
 MainFrame::InitializeProjectHistory( void )
 {
-  IniFileOperation::LoadProjectHistory( project_history_ );
+  IniFileOperation::LoadProjectHistory( project_history_, developer_.GetSettings().project_history_count_max_ );
   this->SetProjectHistory();
 }
 
@@ -1262,14 +1262,14 @@ MainFrame::LoadProjectFile( const std::string& path )
     this->InitializeSquirrelVMGeneral();
     this->SetTitleBar();
 
-    IniFileOperation::LoadProjectHistory( project_history_ );
+    IniFileOperation::LoadProjectHistory( project_history_, developer_.GetSettings().project_history_count_max_ );
     // 同じプロジェクトは履歴から削除
     project_history_.erase(
       std::remove_if( project_history_.begin(), project_history_.end(),
                       [this] ( std::pair<std::string, std::string>& one ) { return one.second == developer_.GetProject().path_; } ),
       project_history_.end() );
     project_history_.push_front( std::make_pair( developer_.GetProject().name_, developer_.GetProject().path_ ) );
-    IniFileOperation::SaveProjectHistory( project_history_ );
+    IniFileOperation::SaveProjectHistory( project_history_, developer_.GetSettings().project_history_count_max_ );
     this->SetProjectHistory();
   } );
 }

@@ -123,8 +123,8 @@ namespace TTVCDeveloper {
     void SaveLastProject( const std::string& path );
     std::string LoadLastProject( void );
 
-    void SaveProjectHistory( const ProjectHistory& history );
-    void LoadProjectHistory( ProjectHistory& history );
+    void SaveProjectHistory( const ProjectHistory& history, unsigned int max );
+    void LoadProjectHistory( ProjectHistory& history, unsigned int max );
 
     void SaveErrorLogDump( TtException& e );
 

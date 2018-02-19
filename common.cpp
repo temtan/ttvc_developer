@@ -100,26 +100,29 @@ IniFileOperation::LoadLastProject( void )
 
 
 void
-IniFileOperation::SaveProjectHistory( const ProjectHistory& history )
+IniFileOperation::SaveProjectHistory( const ProjectHistory& history, unsigned int max )
 {
   TtIniFile ini;
   TtIniSection section = ini[Tag::ProjectHistory];
-  int i = 0;
+  unsigned int i = 0;
   for ( const auto& [project_name, file_path] : history ) {
     section.SetString( Tag::History + TtUtility::ToStringFrom( i ), project_name + "\a" + file_path );
     ++i;
+    if ( i >= max ) {
+      break;
+    }
   }
   section.SetInteger( Tag::Count, i );
 }
 
 void
-IniFileOperation::LoadProjectHistory( ProjectHistory& history )
+IniFileOperation::LoadProjectHistory( ProjectHistory& history, unsigned int max )
 {
   history.clear();
   TtIniFile ini;
   TtIniSection section = ini[Tag::ProjectHistory];
-  int count = section.GetInteger( Tag::Count, 0 );
-  for ( int i = 0; i < count; ++i ) {
+  unsigned int count = section.GetInteger( Tag::Count, 0 );
+  for ( unsigned int i = 0; i < count || i <= max; ++i ) {
     std::string data = section.GetString( Tag::History + TtUtility::ToStringFrom( i ) );
     if ( data.empty() ) {
       continue;
