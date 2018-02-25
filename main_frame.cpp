@@ -831,6 +831,9 @@ MainFrame::RegisterHandlers( void )
 
   // -- ƒeƒXƒg -----
   this->AddCommandHandler( CommandID::Test1, [this] ( int, HWND ) -> WMResult {
+    StandardInputDialog& dialog = *(new StandardInputDialog( "title desu yo" ) );
+    dialog.ShowDialog( *this );
+    dialog.Show();
     return {WMResult::Done};
   } );
 

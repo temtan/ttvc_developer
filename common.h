@@ -184,4 +184,8 @@ namespace TTVCDeveloper {
 
     void Initialize( void );
   }
+
+  namespace Font {
+    extern TtFont OUTPUT_MONOSPACED;
+  }
 }

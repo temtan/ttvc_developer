@@ -59,9 +59,6 @@ namespace TTVCDeveloper {
   // -- OutputEdit -------------------------------------------------------
   class OutputEdit : public TtEditWithStyle<TtEdit::Style::READONLY | TtEdit::Style::MULTILINE | WS_VSCROLL | WS_HSCROLL> {
   public:
-    static TtFont DEFAUT_FONT;
-
-  public:
     explicit OutputEdit( void );
 
     virtual bool CreatedInternal( void ) override;

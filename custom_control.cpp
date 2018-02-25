@@ -185,13 +185,6 @@ MainMenu::SetExternalProgramMenu( TtSubMenuCommand& menu )
 
 
 // -- OutputEdit ---------------------------------------------------------
-TtFont
-OutputEdit::DEFAUT_FONT = TtFont( ::CreateFont( 14, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
-                                                SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS,
-                                                CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-                                                DEFAULT_PITCH | FF_MODERN, nullptr ), true );
-
-
 OutputEdit::OutputEdit( void ) :
 file_path_and_line_handler_( nullptr ),
 process_manager_()
@@ -286,7 +279,7 @@ parse_line_as_file_path_and_line( const std::string& str )
 bool
 OutputEdit::CreatedInternal( void )
 {
-  this->SetFont( OutputEdit::DEFAUT_FONT );
+  this->SetFont( Font::OUTPUT_MONOSPACED );
   this->SetTextLimit( 1024 * 1024 * 2 );
 
   this->OverrideWindowProcedureByTTL();

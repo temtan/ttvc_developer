@@ -14,10 +14,12 @@
 #include "tt_path.h"
 #include "tt_clipboard.h"
 
+#include "common.h"
 #include "utility.h"
 #include "utility_dialogs.h"
 
 using namespace TTVCDeveloper;
+
 
 // -- FileInputDialog ----------------------------------------------------
 FileInputDialog::FileInputDialog( const std::string& default_path ) :
@@ -515,4 +517,70 @@ ProjectVariablesDialog::Created( void )
 
   list_.Show();
   return {true};
+}
+
+// -- StandardInputDialog ------------------------------------------------
+StandardInputDialog::StandardInputDialog( const std::string& title ) :
+title_( title )
+{
+}
+
+
+DWORD
+StandardInputDialog::GetStyle( void )
+{
+  return WS_CAPTION | WS_SIZEBOX;
+}
+
+DWORD
+StandardInputDialog::GetExtendedStyle( void )
+{
+  return WS_EX_TOOLWINDOW;
+}
+
+bool
+StandardInputDialog::Created( void )
+{
+  struct CommandID {
+    enum ID : int {
+      LogEdit = 10001,
+      InputEdit,
+    };
+  };
+
+  this->SetText( title_ );
+
+  log_edit_.Create( {this, CommandID::LogEdit} );
+  input_edit_.Create( {this, CommandID::InputEdit} );
+
+  log_edit_.SetFont( Font::OUTPUT_MONOSPACED );
+  input_edit_.SetFont( Font::OUTPUT_MONOSPACED );
+
+  this->RegisterWMSize( [this] ( int, int w, int h ) -> WMResult {
+    log_edit_.SetPositionSize(   2,      2, w - 4, h - 30 );
+    input_edit_.SetPositionSize( 2, h - 24, w - 4,     22 );
+    return {WMResult::Done};
+  } );
+  this->SetClientSize( 300, 200, false );
+
+  input_edit_.OverrideWindowProcedureByTTL();
+  input_edit_.RegisterSingleHandler( WM_CHAR, [this] ( WPARAM w_param, LPARAM ) -> WMResult {
+    if ( w_param == VK_RETURN ) {
+      int tmp = log_edit_.GetTextLength();
+      log_edit_.SendMessage( EM_SETSEL, tmp, tmp );
+
+      std::string str = input_edit_.GetText();
+      log_edit_.SendMessage( EM_REPLACESEL, 0, reinterpret_cast<WPARAM>( (str + "\r\n").c_str() ) );
+      str.append( "\n" );
+
+      input_edit_.SetText( "" );
+      return {WMResult::Done};
+    }
+    return {WMResult::Incomplete};
+  }, false );
+
+  log_edit_.Show();
+  input_edit_.Show();
+
+  return true;
 }

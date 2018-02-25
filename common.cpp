@@ -213,3 +213,11 @@ Image::Initialize( void )
   add( RSID_ICON_HEADER_FILE );
   add( RSID_ICON_OTHER_FILE );
 }
+
+
+// -- Font ---------------------------------------------------------------
+TtFont
+Font::OUTPUT_MONOSPACED = TtFont( ::CreateFont( 14, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+                                                SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS,
+                                                CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+                                                DEFAULT_PITCH | FF_MODERN, nullptr ), true );

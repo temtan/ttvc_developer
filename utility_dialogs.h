@@ -120,4 +120,24 @@ namespace TTVCDeveloper {
     TtSubMenu menu_;
   };
 
+  // -- StandardInputDialog ----------------------------------------------
+  class StandardInputDialog : public TtDialogModeless {
+  public:
+    explicit StandardInputDialog( const std::string& title );
+
+  private:
+    virtual DWORD  GetStyle( void ) override;
+    virtual DWORD  GetExtendedStyle( void ) override;
+    virtual bool Created( void ) override;
+
+  private:
+    using LogEdit = TtEditWithStyle<TtEdit::Style::READONLY | TtEdit::Style::MULTILINE | WS_VSCROLL | WS_HSCROLL>;
+    // using InputEdit  = TtEditWithStyle<TtEdit::Style::MULTILINE>;
+    using InputEdit  = TtEdit;
+
+    std::string title_;
+
+    LogEdit   log_edit_;
+    InputEdit input_edit_;
+  };
 }
