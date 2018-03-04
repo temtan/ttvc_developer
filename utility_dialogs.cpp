@@ -521,8 +521,15 @@ ProjectVariablesDialog::Created( void )
 
 // -- StandardInputDialog ------------------------------------------------
 StandardInputDialog::StandardInputDialog( const std::string& title ) :
-title_( title )
+title_( title ),
+input_( INVALID_HANDLE_VALUE )
 {
+}
+
+void
+StandardInputDialog::SetHandle( HANDLE input )
+{
+  input_ = input;
 }
 
 
@@ -572,6 +579,15 @@ StandardInputDialog::Created( void )
       std::string str = input_edit_.GetText();
       log_edit_.SendMessage( EM_REPLACESEL, 0, reinterpret_cast<WPARAM>( (str + "\r\n").c_str() ) );
       str.append( "\n" );
+
+      for ( unsigned int i = 0; i < str.size(); ) {
+        DWORD done = 0;
+        int ret = ::WriteFile( input_, str.c_str() + i, str.size() - i, &done, NULL );
+        if ( NOT( ret ) ) {
+          break;
+        }
+        i += done;
+      }
 
       input_edit_.SetText( "" );
       return {WMResult::Done};

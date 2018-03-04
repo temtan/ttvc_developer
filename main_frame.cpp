@@ -831,9 +831,6 @@ MainFrame::RegisterHandlers( void )
 
   // -- テスト -----
   this->AddCommandHandler( CommandID::Test1, [this] ( int, HWND ) -> WMResult {
-    StandardInputDialog& dialog = *(new StandardInputDialog( "title desu yo" ) );
-    dialog.ShowDialog( *this );
-    dialog.Show();
     return {WMResult::Done};
   } );
 
@@ -1075,8 +1072,24 @@ MainFrame::ExecuteExternalProgram( Settings::ExternalProgram& external_program, 
     } );
 
     manager.GetCommands().clear();
-    manager.GetCommands().push_back( {info} );
+    ProcessManager::Command command = {info};
+    command.use_standard_input_ = true; // TODO
+PCD();
+    std::shared_ptr<StandardInputDialog> standard_input_dialog = std::make_shared<StandardInputDialog>( external_program.name_ + "への標準入力" );
+      standard_input_dialog->ShowDialog( *this );
+    command.standard_input_start_ = [this, standard_input_dialog] ( HANDLE handle ) {
+PCD();
+      standard_input_dialog->SetHandle( handle );
+      standard_input_dialog->Show();
+    };
+    command.standard_input_end_ = [standard_input_dialog] ( void ) {
+PCD();
+      standard_input_dialog->Close();
+PCD();
+    };
+    manager.GetCommands().push_back( command );
     manager.ThreadStart();
+PCD();
   }
   else {
     try {

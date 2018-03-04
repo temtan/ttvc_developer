@@ -47,6 +47,7 @@ ProcessManager::SetLast( LastFunction function )
   last_ = function;
 }
 
+
 std::vector<ProcessManager::Command>&
 ProcessManager::GetCommands( void )
 {
@@ -87,7 +88,7 @@ ProcessManager::ThreadStart( void )
       TtUtility::Safing( last_ )( exist_error );
     }
     catch ( ProcessCreateException& e ) {
-      error_handler_( e );
+      TtUtility::Safing( error_handler_ )( e );
     }
   };
 
@@ -99,15 +100,24 @@ ProcessManager::ThreadStart( void )
 void
 ProcessManager::CreateProcess( Command& command )
 {
-  command.pipe_.reset( new TtPipe() );
-  TtPipe::Handle for_error = command.pipe_->GetWritePipeHandle().Duplicate( true );
-  command.pipe_->GetReadPipeHandle().SetInherit( false );
-
+PCD();
   TtProcess::CreateInfo tmp_info = command.info_;
-
   tmp_info.SetInheritHandles( true );
-  tmp_info.SetStandardOutput( command.pipe_->GetWritePipeHandle() );
+
+  command.output_pipe_ = std::make_shared<TtPipe>();
+  command.output_pipe_->GetReadPipeHandle().SetInherit( false );
+  tmp_info.SetStandardOutput( command.output_pipe_->GetWritePipeHandle() );
+
+  TtPipe::Handle for_error = command.output_pipe_->GetWritePipeHandle().Duplicate( true );
   tmp_info.SetStandardError( for_error );
+
+PCD();
+  if ( command.use_standard_input_ ) {
+PCD();
+    command.input_pipe_ = std::make_shared<TtPipe>();
+    command.input_pipe_->GetWritePipeHandle().SetInherit( false );
+    tmp_info.SetStandardInput( command.input_pipe_->GetReadPipeHandle() );
+  }
 
   command.process_ = TtProcess();
   try {
@@ -117,8 +127,14 @@ ProcessManager::CreateProcess( Command& command )
     throw ProcessCreateException( tmp_info, e.GetErrorNumber() );
   }
 
-  command.pipe_->GetWritePipeHandle().Close();
+  command.output_pipe_->GetWritePipeHandle().Close();
   for_error.Close();
+PCD();
+  if ( command.use_standard_input_ ) {
+PCD();
+    command.input_pipe_->GetReadPipeHandle().Close();
+    TtUtility::Safing( command.standard_input_start_ )( command.input_pipe_->GetWritePipeHandle().GetWindowsHandle() );
+  }
 }
 
 void
@@ -127,7 +143,7 @@ ProcessManager::WaitProcess( Command& command )
   TtString::UniqueString buffer( 1024 );
   for (;;) {
     DWORD received;
-    if ( ::ReadFile( command.pipe_->GetReadPipeHandle().GetWindowsHandle(),
+    if ( ::ReadFile( command.output_pipe_->GetReadPipeHandle().GetWindowsHandle(),
                      buffer.GetPointer(), buffer.GetCapacity() - 1, &received, NULL ) == 0 ) {
       break;
     }
@@ -135,5 +151,11 @@ ProcessManager::WaitProcess( Command& command )
     TtUtility::Safing( receiver_ )( buffer.GetPointer() );
   }
   command.process_.Wait();
-  command.pipe_->GetReadPipeHandle().Close();
+PCD();
+  if ( command.use_standard_input_ ) {
+PCD();
+    TtUtility::Safing( command.standard_input_end_ )();
+    command.input_pipe_->GetWritePipeHandle().Close();
+  }
+  command.output_pipe_->GetReadPipeHandle().Close();
 }

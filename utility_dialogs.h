@@ -125,6 +125,8 @@ namespace TTVCDeveloper {
   public:
     explicit StandardInputDialog( const std::string& title );
 
+    void SetHandle( HANDLE input );
+
   private:
     virtual DWORD  GetStyle( void ) override;
     virtual DWORD  GetExtendedStyle( void ) override;
@@ -132,10 +134,10 @@ namespace TTVCDeveloper {
 
   private:
     using LogEdit = TtEditWithStyle<TtEdit::Style::READONLY | TtEdit::Style::MULTILINE | WS_VSCROLL | WS_HSCROLL>;
-    // using InputEdit  = TtEditWithStyle<TtEdit::Style::MULTILINE>;
     using InputEdit  = TtEdit;
 
     std::string title_;
+    HANDLE      input_;
 
     LogEdit   log_edit_;
     InputEdit input_edit_;

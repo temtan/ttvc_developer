@@ -17,20 +17,25 @@ namespace TTVCDeveloper {
   // -- ProcessManager ---------------------------------------------------
   class ProcessManager {
   public:
-    using ErrorHandler   = std::function<void ( ProcessCreateException& e )>;
-    using OutputReceiver = std::function<void ( const std::string& data )>;
-    using BeforeFunction = std::function<bool ( void )>;
-    using AfterFunction  = std::function<bool ( DWORD exit_code )>;
-    using Function       = std::function<void ( void )>;
-    using LastFunction   = std::function<void ( bool exist_error )>;
+    using ErrorHandler               = std::function<void ( ProcessCreateException& e )>;
+    using OutputReceiver             = std::function<void ( const std::string& data )>;
+    using BeforeFunction             = std::function<bool ( void )>;
+    using AfterFunction              = std::function<bool ( DWORD exit_code )>;
+    using Function                   = std::function<void ( void )>;
+    using LastFunction               = std::function<void ( bool exist_error )>;
+    using StandardInputStartFunction = std::function<void ( HANDLE handle )>;
 
     struct Command {
-      TtProcess::CreateInfo   info_;
-      BeforeFunction          before_;
-      AfterFunction           after_;
+      TtProcess::CreateInfo      info_;
+      BeforeFunction             before_;
+      AfterFunction              after_;
+      StandardInputStartFunction standard_input_start_;
+      Function                   standard_input_end_;
 
       TtProcess               process_;
-      std::shared_ptr<TtPipe> pipe_;
+      std::shared_ptr<TtPipe> output_pipe_;
+      std::shared_ptr<TtPipe> input_pipe_;
+      bool use_standard_input_;
     };
 
     explicit ProcessManager( void );
@@ -51,12 +56,12 @@ namespace TTVCDeveloper {
     void WaitProcess( Command& command );
 
   private:
-    ErrorHandler         error_handler_;
-    OutputReceiver       receiver_;
-    Function             initializer_;
-    Function             finalizer_;
-    BeforeFunction       first_;
-    LastFunction         last_;
+    ErrorHandler   error_handler_;
+    OutputReceiver receiver_;
+    Function       initializer_;
+    Function       finalizer_;
+    BeforeFunction first_;
+    LastFunction   last_;
 
     std::vector<Command> commands_;
 
