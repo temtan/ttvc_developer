@@ -157,6 +157,7 @@ namespace TTVCDeveloper {
       std::string              target_argument_;
       std::string              target_current_directory_;
       bool                     target_use_output_edit_;
+      bool                     target_use_input_dialog_;
       // -- Compile
       TtEnum<OptimizeKind>     optimize_kind_;
       TtEnum<RuntimeLibrary>   runtime_library_;

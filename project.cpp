@@ -375,6 +375,7 @@ namespace Tag {
   DEFINE_PARAMETER_NAME_STRING( TargetArgument );
   DEFINE_PARAMETER_NAME_STRING( TargetCurrentDirectory );
   DEFINE_PARAMETER_NAME_STRING( TargetUseOutputEdit );
+  DEFINE_PARAMETER_NAME_STRING( TargetUseInputDialog );
   DEFINE_PARAMETER_NAME_STRING( IncludePath );
   DEFINE_PARAMETER_NAME_STRING( Define );
   DEFINE_PARAMETER_NAME_STRING( OptimizeKind );
@@ -474,6 +475,7 @@ Project::SaveToFileStructures( void )
     section.SetString(  Tag::TargetArgument,         structure->target_argument_ );
     section.SetString(  Tag::TargetCurrentDirectory, structure->target_current_directory_ );
     section.SetBoolean( Tag::TargetUseOutputEdit,    structure->target_use_output_edit_ );
+    section.SetBoolean( Tag::TargetUseInputDialog,   structure->target_use_input_dialog_ );
 
     section.SetEnum<Project::OptimizeKind>( Tag::OptimizeKind, structure->optimize_kind_ );
     section.SetEnum<Project::RuntimeLibrary>( Tag::RuntimeLibrary, structure->runtime_library_ );
@@ -639,6 +641,7 @@ Project::LoadFromFileStructures( void )
     structure.target_argument_          = section.GetString(  Tag::TargetArgument );
     structure.target_current_directory_ = section.GetString(  Tag::TargetCurrentDirectory );
     structure.target_use_output_edit_   = section.GetBoolean( Tag::TargetUseOutputEdit, false );
+    structure.target_use_input_dialog_  = section.GetBoolean( Tag::TargetUseInputDialog, false );
 
     structure.optimize_kind_   = section.GetEnum<OptimizeKind>( Tag::OptimizeKind, OptimizeKind::NoSpecify );
     structure.runtime_library_ = section.GetEnum<RuntimeLibrary>( Tag::RuntimeLibrary, RuntimeLibrary::Static );
