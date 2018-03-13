@@ -32,6 +32,7 @@ namespace Tag {
   DEFINE_PARAMETER_NAME_STRING( Argument );
   DEFINE_PARAMETER_NAME_STRING( CurrentDirectory );
   DEFINE_PARAMETER_NAME_STRING( UseOutputEdit );
+  DEFINE_PARAMETER_NAME_STRING( UseInputDialog );
   DEFINE_PARAMETER_NAME_STRING( ShortcutKey );
   DEFINE_PARAMETER_NAME_STRING( CompileKey );
   DEFINE_PARAMETER_NAME_STRING( BuildKey );
@@ -51,7 +52,8 @@ for_open_file_( false ),
 path_(),
 argument_(),
 current_directory_(),
-use_output_edit_( false )
+use_output_edit_( false ),
+use_input_dialog_( false )
 {
 }
 
@@ -148,12 +150,13 @@ Settings::ReadFromIniFile( TtIniFile& ini_file )
       }
       auto section = *it;
       ExternalProgram tmp;
-      tmp.name_              = section.GetString(  Tag::Name,             "" );
-      tmp.for_open_file_     = section.GetBoolean( Tag::ForOpenFile,   false );
-      tmp.path_              = section.GetString(  Tag::Path,             "" );
-      tmp.argument_          = section.GetString(  Tag::Argument,         "" );
-      tmp.current_directory_ = section.GetString(  Tag::CurrentDirectory, "" );
-      tmp.use_output_edit_   = section.GetBoolean( Tag::UseOutputEdit, false );
+      tmp.name_              = section.GetString(  Tag::Name,              "" );
+      tmp.for_open_file_     = section.GetBoolean( Tag::ForOpenFile,    false );
+      tmp.path_              = section.GetString(  Tag::Path,              "" );
+      tmp.argument_          = section.GetString(  Tag::Argument,          "" );
+      tmp.current_directory_ = section.GetString(  Tag::CurrentDirectory,  "" );
+      tmp.use_output_edit_   = section.GetBoolean( Tag::UseOutputEdit,  false );
+      tmp.use_input_dialog_  = section.GetBoolean( Tag::UseInputDialog, false );
       external_programs_.push_back( tmp );
     }
   }
@@ -217,6 +220,7 @@ Settings::WriteToIniFile( TtIniFile& ini_file ) const
       section.SetString(  Tag::Argument,         external_program.argument_          );
       section.SetString(  Tag::CurrentDirectory, external_program.current_directory_ );
       section.SetBoolean( Tag::UseOutputEdit,    external_program.use_output_edit_   );
+      section.SetBoolean( Tag::UseInputDialog,   external_program.use_input_dialog_  );
       ++index;
     }
     ini_file[Tag::ExternalProgram + TtUtility::ToStringFrom( index )].Clear();

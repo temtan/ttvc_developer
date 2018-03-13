@@ -24,6 +24,7 @@ namespace TTVCDeveloper {
       std::string argument_;
       std::string current_directory_;
       bool        use_output_edit_;
+      bool        use_input_dialog_;
     };
 
     // -- constructor
