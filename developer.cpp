@@ -389,9 +389,9 @@ Developer::MakeProcessCreateInfo( Settings::ExternalProgram& program, TtForm& pa
   translator.SetFileVariable( program.for_open_file_, open_file );
 
   TtProcess::CreateInfo info( translator.Translate( program.path_ ) );
-  info.SetArguments( translator.Translate( program.argument_ ) );
+  info.arguments_ = translator.Translate( program.argument_ );
   if ( NOT( program.current_directory_.empty() ) ) {
-    info.SetCurrentDirectory( translator.Translate( program.current_directory_ ) );
+    info.current_directory_ = translator.Translate( program.current_directory_ );
   }
   return info;
 }

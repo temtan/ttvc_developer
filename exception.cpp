@@ -148,7 +148,7 @@ ProcessCreateException::Message( void )
 {
   std::string tmp = this->BasicMessage();
   tmp.append( "\r\n" );
-  tmp.append( "実行ファイル : " + info_.GetFileName() );
+  tmp.append( "実行ファイル : " + info_.filename_ );
   tmp.append( "\r\n" );
   tmp.append( "エラーメッセージ : " + TtUtility::GetWindowsSystemErrorMessage( error_number_ ) );
   return tmp;
@@ -171,7 +171,7 @@ std::string
 ProcessCreateException::Dump( void ) const
 {
   std::ostringstream os;
-  os << typeid( *this ).name() << " : " << info_.GetFileName() << "(" << error_number_ << ")";
+  os << typeid( *this ).name() << " : " << info_.filename_ << "(" << error_number_ << ")";
   return os.str();
 }
 

@@ -411,9 +411,9 @@ MainFrame::RegisterHandlers( void )
     // nmake コマンドを呼び出す TtProcess::CreateInfo を作る
     auto make_info = [this] ( const std::string& target ) {
       TtProcess::CreateInfo info( developer_.GetCurrentCompilerSettings().make_command_path_ );
-      info.SetShowState( TtWindow::ShowState::HIDE );
-      info.SetCurrentDirectory( developer_.GetProjectDirectoryPath() );
-      info.SetArguments( "/f \"" + developer_.GetMakefilePath() + "\" " + target );
+      info.show_state_ = TtWindow::ShowState::HIDE;
+      info.current_directory_ = developer_.GetProjectDirectoryPath();
+      info.arguments_ = "/f \"" + developer_.GetMakefilePath() + "\" " + target;
       return info;
     };
 
@@ -774,7 +774,7 @@ MainFrame::RegisterHandlers( void )
         }
 
         TtProcess::CreateInfo info( developer_.GetSettings().editor_path_ );
-        info.SetArguments( document.MakeText() );
+        info.arguments_ = document.MakeText();
         try {
           TtProcess process;
           process.Create( info );
@@ -1063,7 +1063,7 @@ MainFrame::ExecuteExternalProgram( Settings::ExternalProgram& external_program, 
 
     tab_.Select( MainTab::ExternalProgram );
 
-    info.SetShowState( TtWindow::ShowState::HIDE );
+    info.show_state_ = TtWindow::ShowState::HIDE;
 
     auto& manager = tab_.GetExternalProgramEdit().GetProcessManager();
     manager.SetFirst( [this] ( void ) {
@@ -1229,11 +1229,11 @@ MainFrame::Execute( void )
   translator.SetUserInputHandlerAndParentOfDialog( developer_.GetCurrentStructure().target_name_ + "への入力", *this );
 
   TtProcess::CreateInfo info( developer_.GetTargetFilePath() );
-  info.SetArguments( translator.Translate( developer_.GetCurrentStructure().target_argument_ ) );
+  info.arguments_ = translator.Translate( developer_.GetCurrentStructure().target_argument_ );
   if ( NOT( developer_.GetCurrentStructure().target_current_directory_.empty() ) ) {
-    info.SetCurrentDirectory( translator.Translate( developer_.GetCurrentStructure().target_current_directory_ ) );
+    info.current_directory_ = translator.Translate( developer_.GetCurrentStructure().target_current_directory_ );
   }
-  info.SetPriority( TtProcess::Priority::BELOW_NORMAL );
+  info.priority_ = TtProcess::Priority::BELOW_NORMAL;
 
   if ( developer_.GetCurrentStructure().target_use_output_edit_ ) {
     auto& manager = tab_.GetExecuteEdit().GetProcessManager();

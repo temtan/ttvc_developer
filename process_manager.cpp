@@ -101,19 +101,19 @@ void
 ProcessManager::CreateProcess( Command& command )
 {
   TtProcess::CreateInfo tmp_info = command.info_;
-  tmp_info.SetInheritHandles( true );
+  tmp_info.inherit_handles_ = true;
 
   command.output_pipe_ = std::make_shared<TtPipe>();
   command.output_pipe_->GetReadPipeHandle().SetInherit( false );
-  tmp_info.SetStandardOutput( command.output_pipe_->GetWritePipeHandle() );
+  tmp_info.standard_output_ = command.output_pipe_->GetWritePipeHandle();
 
   TtPipe::Handle for_error = command.output_pipe_->GetWritePipeHandle().Duplicate( true );
-  tmp_info.SetStandardError( for_error );
+  tmp_info.standard_error_ = for_error;
 
   if ( command.use_standard_input_ ) {
     command.input_pipe_ = std::make_shared<TtPipe>();
     command.input_pipe_->GetWritePipeHandle().SetInherit( false );
-    tmp_info.SetStandardInput( command.input_pipe_->GetReadPipeHandle() );
+    tmp_info.standard_input_ = command.input_pipe_->GetReadPipeHandle();
   }
 
   command.process_ = TtProcess();

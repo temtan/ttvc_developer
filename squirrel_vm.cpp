@@ -638,13 +638,13 @@ SquirrelVM::InitializeMainFrame( MainFrame& frame )
               pipe.GetReadPipeHandle().SetInherit( false );
 
               TtProcess::CreateInfo tmp_info;
-              tmp_info.SetFileName( "cmd.exe" );
-              tmp_info.SetArguments( "/C "+ str );
-              tmp_info.SetShowState( TtWindow::ShowState::HIDE );
+              tmp_info.filename_ = "cmd.exe";
+              tmp_info.arguments_ = "/C "+ str;
+              tmp_info.show_state_ = TtWindow::ShowState::HIDE;
 
-              tmp_info.SetInheritHandles( true );
-              tmp_info.SetStandardOutput( pipe.GetWritePipeHandle() );
-              tmp_info.SetStandardError( for_error );
+              tmp_info.inherit_handles_ = true;
+              tmp_info.standard_output_ = pipe.GetWritePipeHandle();
+              tmp_info.standard_error_ = for_error;
 
               TtProcess process;
               try {
