@@ -41,6 +41,7 @@ namespace Tag {
   DEFINE_PARAMETER_NAME_STRING( target_argument );
   DEFINE_PARAMETER_NAME_STRING( target_current_directory );
   DEFINE_PARAMETER_NAME_STRING( target_use_output_edit );
+  DEFINE_PARAMETER_NAME_STRING( target_use_input_dialog );
   DEFINE_PARAMETER_NAME_STRING( optimize_kind );
   DEFINE_PARAMETER_NAME_STRING( runtime_library );
   DEFINE_PARAMETER_NAME_STRING( use_exception );
@@ -61,6 +62,7 @@ namespace Tag {
   DEFINE_PARAMETER_NAME_STRING( argument );
   DEFINE_PARAMETER_NAME_STRING( current_directory );
   DEFINE_PARAMETER_NAME_STRING( use_output_edit );
+  DEFINE_PARAMETER_NAME_STRING( use_input_dialog );
   DEFINE_PARAMETER_NAME_STRING( compiler_path );
   DEFINE_PARAMETER_NAME_STRING( resource_compiler_path );
   DEFINE_PARAMETER_NAME_STRING( environment_variable_include );
@@ -273,6 +275,7 @@ SquirrelVM::Initialize( void )
           this->NewStringSlotOfTopByString(  Tag::argument,          ""    );
           this->NewStringSlotOfTopByString(  Tag::current_directory, ""    );
           this->NewBooleanSlotOfTopByString( Tag::use_output_edit,   false );
+          this->NewBooleanSlotOfTopByString( Tag::use_input_dialog,  false );
         } );
 
       // -- Settings::ExternalProgramNative ŽÀ‘• ----------
@@ -300,6 +303,7 @@ SquirrelVM::Initialize( void )
                 vm.SetStringToTopByString(  Tag::argument,          self.argument_ );
                 vm.SetStringToTopByString(  Tag::current_directory, self.current_directory_ );
                 vm.SetBooleanToTopByString( Tag::use_output_edit,   self.use_output_edit_ );
+                vm.SetBooleanToTopByString( Tag::use_input_dialog,  self.use_input_dialog_ );
 
                 return TtSquirrel::Const::NoneReturnValue;
               } ) );
@@ -404,6 +408,7 @@ SquirrelVM::Initialize( void )
                 vm.SetStringToTopByString(  Tag::target_argument,                  self.target_argument_ );
                 vm.SetStringToTopByString(  Tag::target_current_directory,         self.target_current_directory_ );
                 vm.SetBooleanToTopByString( Tag::target_use_output_edit,           self.target_use_output_edit_ );
+                vm.SetBooleanToTopByString( Tag::target_use_input_dialog,          self.target_use_input_dialog_ );
                 vm.SetIntegerToTopByString( Tag::optimize_kind,                    self.optimize_kind_ );
                 vm.SetIntegerToTopByString( Tag::runtime_library,                  self.runtime_library_ );
                 vm.SetBooleanToTopByString( Tag::use_exception,                    self.use_exception_ );
@@ -448,6 +453,7 @@ SquirrelVM::Initialize( void )
           this->NewNullSlotOfTopByString( Tag::target_argument );
           this->NewNullSlotOfTopByString( Tag::target_current_directory );
           this->NewNullSlotOfTopByString( Tag::target_use_output_edit );
+          this->NewNullSlotOfTopByString( Tag::target_use_input_dialog );
           this->NewNullSlotOfTopByString( Tag::optimize_kind );
           this->NewNullSlotOfTopByString( Tag::runtime_library );
           this->NewNullSlotOfTopByString( Tag::use_exception );
@@ -893,6 +899,7 @@ SquirrelVM::GetSubMenuCommandMakerOf( const std::string& key )
         tmp.argument_          = this->GetByStringFromTopAndGetAs<std::string>( Tag::argument          );
         tmp.current_directory_ = this->GetByStringFromTopAndGetAs<std::string>( Tag::current_directory );
         tmp.use_output_edit_   = this->GetByStringFromTopAndGetAs<bool>(        Tag::use_output_edit   );
+        tmp.use_input_dialog_  = this->GetByStringFromTopAndGetAs<bool>(        Tag::use_input_dialog  );
         current.push_back( std::make_shared<ExternalProgramItem>( tmp ) );
       }
     }

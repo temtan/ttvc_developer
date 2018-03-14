@@ -100,7 +100,6 @@ ProcessManager::ThreadStart( void )
 void
 ProcessManager::CreateProcess( Command& command )
 {
-PCD();
   TtProcess::CreateInfo tmp_info = command.info_;
   tmp_info.SetInheritHandles( true );
 
@@ -111,9 +110,7 @@ PCD();
   TtPipe::Handle for_error = command.output_pipe_->GetWritePipeHandle().Duplicate( true );
   tmp_info.SetStandardError( for_error );
 
-PCD();
   if ( command.use_standard_input_ ) {
-PCD();
     command.input_pipe_ = std::make_shared<TtPipe>();
     command.input_pipe_->GetWritePipeHandle().SetInherit( false );
     tmp_info.SetStandardInput( command.input_pipe_->GetReadPipeHandle() );
@@ -129,9 +126,7 @@ PCD();
 
   command.output_pipe_->GetWritePipeHandle().Close();
   for_error.Close();
-PCD();
   if ( command.use_standard_input_ ) {
-PCD();
     command.input_pipe_->GetReadPipeHandle().Close();
     TtUtility::Safing( command.standard_input_start_ )( command.input_pipe_->GetWritePipeHandle().GetWindowsHandle() );
   }
@@ -151,9 +146,7 @@ ProcessManager::WaitProcess( Command& command )
     TtUtility::Safing( receiver_ )( buffer.GetPointer() );
   }
   command.process_.Wait();
-PCD();
   if ( command.use_standard_input_ ) {
-PCD();
     TtUtility::Safing( command.standard_input_end_ )();
     command.input_pipe_->GetWritePipeHandle().Close();
   }

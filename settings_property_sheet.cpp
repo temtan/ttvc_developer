@@ -345,6 +345,7 @@ SettingsPropertySheet::ExternalProgramPage::ProgramDialog::Created( void )
   struct CommandID {
     enum ID : int {
       PathButton = 10001,
+      UseOutputCheck,
       ShowHelpButton,
       OkButton,
       CancelButton,
@@ -362,12 +363,13 @@ SettingsPropertySheet::ExternalProgramPage::ProgramDialog::Created( void )
   argument_edit_.Create( {this} );
   current_label_.Create( {this} );
   current_edit_.Create( {this} );
-  use_output_check_.Create( {this} );
+  use_output_check_.Create( {this, CommandID::UseOutputCheck} );
+  use_input_check_.Create( {this} );
   show_help_button_.Create( {this, CommandID::ShowHelpButton} );
   ok_button_.Create( {this, CommandID::OkButton} );
   cancel_button_.Create( {this, CommandID::CancelButton} );
 
-  this->SetClientSize( 552, 224, false );
+  this->SetClientSize( 552, 252, false );
   this->SetCenterRelativeToParent();
   this->RegisterWMSize( [this] ( int, int w, int h ) -> WMResult {
     name_label_.SetPositionSize(             8,      8,      84,       20 );
@@ -382,7 +384,8 @@ SettingsPropertySheet::ExternalProgramPage::ProgramDialog::Created( void )
     current_label_.SetPositionSize(          8,    112,      84,       20 );
     current_edit_.SetPositionSize(          98,    108, w - 110,       20 );
     use_output_check_.SetPositionSize(       8,    136,     138,       20 );
-    show_help_button_.SetPositionSize(       8,    160,     200,       28 );
+    use_input_check_.SetPositionSize(        8,    160,     188,       20 );
+    show_help_button_.SetPositionSize(       8,    188,     200,       28 );
     ok_button_.SetPositionSize(        w - 194, h - 26,      88,       21 );
     cancel_button_.SetPositionSize(    w -  94, h - 26,      88,       21 );
     return {WMResult::Done};
@@ -392,13 +395,13 @@ SettingsPropertySheet::ExternalProgramPage::ProgramDialog::Created( void )
     case WMSZ_TOP:
     case WMSZ_TOPLEFT:
     case WMSZ_TOPRIGHT:
-      rectangle.top = rectangle.bottom - 248;
+      rectangle.top = rectangle.bottom - 276;
       break;
 
     case WMSZ_BOTTOM:
     case WMSZ_BOTTOMLEFT:
     case WMSZ_BOTTOMRIGHT:
-      rectangle.bottom = rectangle.top + 248;
+      rectangle.bottom = rectangle.top + 276;
       break;
     }
     if ( rectangle.right - rectangle.left < 218 ) {
@@ -428,6 +431,7 @@ SettingsPropertySheet::ExternalProgramPage::ProgramDialog::Created( void )
   argument_label_.SetText( "引数：" );
   current_label_.SetText( "作業フォルダ：" );
   use_output_check_.SetText( "結果をタブに出力する。" );
+  use_input_check_.SetText( "標準入力ダイアログを使用する。" );
   show_help_button_.SetText( "使用可能変数一覧ダイアログの表示" );
   ok_button_.SetText( "OK" );
   cancel_button_.SetText( "キャンセル" );
@@ -438,6 +442,9 @@ SettingsPropertySheet::ExternalProgramPage::ProgramDialog::Created( void )
   argument_edit_.SetText( program_.argument_ );
   current_edit_.SetText( program_.current_directory_ );
   use_output_check_.SetCheck( program_.use_output_edit_ );
+  use_input_check_.SetCheck( program_.use_input_dialog_ );
+
+  use_input_check_.SetEnabled( use_output_check_.GetCheck() );
 
   this->AddCommandHandler( CommandID::PathButton, [this] ( int, HWND ) -> WMResult {
     TtOpenFileDialog dialog;
@@ -446,6 +453,10 @@ SettingsPropertySheet::ExternalProgramPage::ProgramDialog::Created( void )
     if ( dialog.ShowDialog( *this ) ) {
       path_edit_.SetText( dialog.GetFileName() );
     }
+    return {WMResult::Done};
+  } );
+  this->AddCommandHandler( CommandID::UseOutputCheck, [this] ( int, HWND ) -> WMResult {
+    use_input_check_.SetEnabled( use_output_check_.GetCheck() );
     return {WMResult::Done};
   } );
   this->AddCommandHandler( CommandID::ShowHelpButton, [this] ( int, HWND ) -> WMResult {
@@ -459,6 +470,7 @@ SettingsPropertySheet::ExternalProgramPage::ProgramDialog::Created( void )
     program_.argument_ = argument_edit_.GetText();
     program_.current_directory_ = current_edit_.GetText();
     program_.use_output_edit_ = use_output_check_.GetCheck();
+    program_.use_input_dialog_ = use_input_check_.GetCheck();
     this->EndDialog( 1 );
     return {WMResult::Done};
   } );
@@ -479,6 +491,7 @@ SettingsPropertySheet::ExternalProgramPage::ProgramDialog::Created( void )
   current_label_.Show();
   current_edit_.Show();
   use_output_check_.Show();
+  use_input_check_.Show();
   show_help_button_.Show();
   ok_button_.Show();
   cancel_button_.Show();

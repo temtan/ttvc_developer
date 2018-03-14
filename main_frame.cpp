@@ -1073,23 +1073,21 @@ MainFrame::ExecuteExternalProgram( Settings::ExternalProgram& external_program, 
 
     manager.GetCommands().clear();
     ProcessManager::Command command = {info};
-    command.use_standard_input_ = true; // TODO
-PCD();
+    command.use_standard_input_ = external_program.use_input_dialog_;
+
     std::shared_ptr<StandardInputDialog> standard_input_dialog = std::make_shared<StandardInputDialog>( external_program.name_ + "‚Ö‚Ì•W€“ü—Í" );
-      standard_input_dialog->ShowDialog( *this );
+    standard_input_dialog->ShowDialog( *this );
+    standard_input_dialog->SetCenterRelativeTo( tab_ );
     command.standard_input_start_ = [this, standard_input_dialog] ( HANDLE handle ) {
-PCD();
       standard_input_dialog->SetHandle( handle );
       standard_input_dialog->Show();
     };
     command.standard_input_end_ = [standard_input_dialog] ( void ) {
-PCD();
       standard_input_dialog->Close();
-PCD();
     };
+
     manager.GetCommands().push_back( command );
     manager.ThreadStart();
-PCD();
   }
   else {
     try {
@@ -1245,7 +1243,21 @@ MainFrame::Execute( void )
     } );
 
     manager.GetCommands().clear();
-    manager.GetCommands().push_back( {info} );
+    ProcessManager::Command command = {info};
+    command.use_standard_input_ = developer_.GetCurrentStructure().target_use_input_dialog_;
+
+    std::shared_ptr<StandardInputDialog> standard_input_dialog = std::make_shared<StandardInputDialog>( developer_.GetCurrentStructure().target_name_ + "‚Ö‚Ì•W€“ü—Í" );
+    standard_input_dialog->ShowDialog( *this );
+    standard_input_dialog->SetCenterRelativeTo( tab_ );
+    command.standard_input_start_ = [this, standard_input_dialog] ( HANDLE handle ) {
+      standard_input_dialog->SetHandle( handle );
+      standard_input_dialog->Show();
+    };
+    command.standard_input_end_ = [standard_input_dialog] ( void ) {
+      standard_input_dialog->Close();
+    };
+
+    manager.GetCommands().push_back( command );
     manager.ThreadStart();
   }
   else {

@@ -244,38 +244,41 @@ ProjectDialog::ApplicationPanel::CreatedInternal( void )
   target_argument_edit_.Create( {this} );
   target_current_label_.Create( {this} );
   target_current_edit_.Create( {this} );
-  target_use_check_.Create( {this} );
+  target_use_output_check_.Create( {this, CommandID::TargetUseOutputCheck} );
+  target_use_input_check_.Create( {this} );
   show_variables_button_.Create( {this, CommandID::ShowProjectVariablesButton} );
   help_label_.Create( {this} );
 
   this->RegisterWMSize( [this] ( int, int w, int ) -> WMResult {
-    platform_label_.SetPositionSize(           4,   8,     128,  16 );
-    platform_combo_.SetPositionSize(         136,   4,      84,  70 );
-    target_kind_label_.SetPositionSize(        4,  36,     128,  16 );
-    target_kind_combo_.SetPositionSize(      136,  32,     188,  70 );
-    output_directory_label_.SetPositionSize(   4,  64,     128,  16 );
-    output_directory_edit_.SetPositionSize(  136,  60, w - 148,  20 );
-    target_label_.SetPositionSize(             4,  92,     128,  16 );
-    target_edit_.SetPositionSize(            136,  88, w - 148,  20 );
-    target_argument_label_.SetPositionSize(    4, 130,     128,  16 );
-    target_argument_edit_.SetPositionSize(   136, 126, w - 148,  20 );
-    target_current_label_.SetPositionSize(     4, 158,     128,  16 );
-    target_current_edit_.SetPositionSize(    136, 154, w - 148,  20 );
-    target_use_check_.SetPositionSize(         8, 182,     200,  20 );
-    show_variables_button_.SetPositionSize(    8, 210,     200,  28 );
-    help_label_.SetPositionSize(             220, 220,     340,  16 );
+    platform_label_.SetPositionSize(            4,   8,     128,  16 );
+    platform_combo_.SetPositionSize(          136,   4,      84,  70 );
+    target_kind_label_.SetPositionSize(         4,  36,     128,  16 );
+    target_kind_combo_.SetPositionSize(       136,  32,     188,  70 );
+    output_directory_label_.SetPositionSize(    4,  64,     128,  16 );
+    output_directory_edit_.SetPositionSize(   136,  60, w - 148,  20 );
+    target_label_.SetPositionSize(              4,  92,     128,  16 );
+    target_edit_.SetPositionSize(             136,  88, w - 148,  20 );
+    target_argument_label_.SetPositionSize(     4, 130,     128,  16 );
+    target_argument_edit_.SetPositionSize(    136, 126, w - 148,  20 );
+    target_current_label_.SetPositionSize(      4, 158,     128,  16 );
+    target_current_edit_.SetPositionSize(     136, 154, w - 148,  20 );
+    target_use_output_check_.SetPositionSize(   8, 182,     200,  20 );
+    target_use_input_check_.SetPositionSize(    8, 206,     200,  20 );
+    show_variables_button_.SetPositionSize(     8, 238,     200,  28 );
+    help_label_.SetPositionSize(              220, 248,     340,  16 );
     return {WMResult::Done};
   } );
 
-  platform_label_.SetText(         "プラットフォーム" );
-  target_kind_label_.SetText(      "ターゲット種類" );
-  output_directory_label_.SetText( "出力ディレクトリ名" );
-  target_label_.SetText(           "出力ファイル名" );
-  target_argument_label_.SetText(  "実行時引数" );
-  target_current_label_.SetText(   "実行時作業フォルダ" );
-  target_use_check_.SetText(       "実行結果をタブに出力する。" );
-  show_variables_button_.SetText(  "使用可能変数一覧ダイアログの表示" );
-  help_label_.SetText(             "※実行時引数と実行時作業フォルダでは変数が使用できます。" );
+  platform_label_.SetText(          "プラットフォーム" );
+  target_kind_label_.SetText(       "ターゲット種類" );
+  output_directory_label_.SetText(  "出力ディレクトリ名" );
+  target_label_.SetText(            "出力ファイル名" );
+  target_argument_label_.SetText(   "実行時引数" );
+  target_current_label_.SetText(    "実行時作業フォルダ" );
+  target_use_output_check_.SetText( "実行結果をタブに出力する。" );
+  target_use_input_check_.SetText(  "標準入力ダイアログを使用する。" );
+  show_variables_button_.SetText(   "使用可能変数一覧ダイアログの表示" );
+  help_label_.SetText(              "※実行時引数と実行時作業フォルダでは変数が使用できます。" );
 
   platform_combo_.PushWithData( "x86", Platform::X86 );
   platform_combo_.PushWithData( "x64", Platform::X64 );
@@ -285,6 +288,10 @@ ProjectDialog::ApplicationPanel::CreatedInternal( void )
   target_kind_combo_.PushWithData( "ダイナミックリンクライブラリ", Project::TargetKind::DynamicLinkLibrary );
   target_kind_combo_.PushWithData( "スタティックライブラリ",       Project::TargetKind::StaticLibrary );
 
+  this->AddCommandHandler( CommandID::TargetUseOutputCheck, [this] ( int, HWND ) -> WMResult {
+    target_use_input_check_.SetEnabled( target_use_output_check_.GetCheck() );
+    return {WMResult::Done};
+  } );
   this->AddCommandHandler( CommandID::ShowProjectVariablesButton, [this] ( int, HWND ) -> WMResult {
     parent_.project_variables_dialog_.Show();
     return {WMResult::Done};
@@ -302,7 +309,8 @@ ProjectDialog::ApplicationPanel::CreatedInternal( void )
   target_argument_edit_.Show();
   target_current_label_.Show();
   target_current_edit_.Show();
-  target_use_check_.Show();
+  target_use_output_check_.Show();
+  target_use_input_check_.Show();
   show_variables_button_.Show();
   help_label_.Show();
 
@@ -318,7 +326,10 @@ ProjectDialog::ApplicationPanel::SetFromStructure( const Project::Structure& str
   output_directory_edit_.SetText( structure.output_directory_name_ );
   target_argument_edit_.SetText( structure.target_argument_ );
   target_current_edit_.SetText( structure.target_current_directory_ );
-  target_use_check_.SetCheck( structure.target_use_output_edit_ );
+  target_use_output_check_.SetCheck( structure.target_use_output_edit_ );
+  target_use_input_check_.SetCheck( structure.target_use_input_dialog_ );
+
+  target_use_input_check_.SetEnabled( target_use_output_check_.GetCheck() );
 }
 
 void
@@ -330,7 +341,8 @@ ProjectDialog::ApplicationPanel::SetToStructure( Project::Structure& structure )
   structure.output_directory_name_ = output_directory_edit_.GetText();
   structure.target_argument_ = target_argument_edit_.GetText();
   structure.target_current_directory_ = target_current_edit_.GetText();
-  structure.target_use_output_edit_ = target_use_check_.GetCheck();
+  structure.target_use_output_edit_ = target_use_output_check_.GetCheck();
+  structure.target_use_input_dialog_ = target_use_input_check_.GetCheck();
 }
 
 

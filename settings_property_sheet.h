@@ -157,6 +157,7 @@ namespace TTVCDeveloper {
         TtStatic   current_label_;
         TtEdit     current_edit_;
         TtCheckBox use_output_check_;
+        TtCheckBox use_input_check_;
         TtButton   show_help_button_;
         TtButton   ok_button_;
         TtButton   cancel_button_;

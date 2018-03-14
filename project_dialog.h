@@ -26,6 +26,7 @@ namespace TTVCDeveloper {
         Ok,
         Cancel,
 
+        TargetUseOutputCheck,
         ShowProjectVariablesButton,
 
         IncludeAddButton,
@@ -107,7 +108,8 @@ namespace TTVCDeveloper {
       TtEdit          target_argument_edit_;
       TtStatic        target_current_label_;
       TtEdit          target_current_edit_;
-      TtCheckBox      target_use_check_;
+      TtCheckBox      target_use_output_check_;
+      TtCheckBox      target_use_input_check_;
       TtButton        show_variables_button_;
       TtStatic        help_label_;
     };
