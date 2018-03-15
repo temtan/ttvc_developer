@@ -101,6 +101,7 @@ void
 ProcessManager::CreateProcess( Command& command )
 {
   TtProcess::CreateInfo tmp_info = command.info_;
+  tmp_info.use_standard_handles_ = true;
   tmp_info.inherit_handles_ = true;
 
   command.output_pipe_ = std::make_shared<TtPipe>();

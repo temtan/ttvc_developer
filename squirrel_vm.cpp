@@ -641,6 +641,7 @@ SquirrelVM::InitializeMainFrame( MainFrame& frame )
               tmp_info.filename_ = "cmd.exe";
               tmp_info.arguments_ = "/C "+ str;
               tmp_info.show_state_ = TtWindow::ShowState::HIDE;
+              tmp_info.use_standard_handles_ = true;
 
               tmp_info.inherit_handles_ = true;
               tmp_info.standard_output_ = pipe.GetWritePipeHandle();

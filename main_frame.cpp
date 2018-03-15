@@ -412,6 +412,7 @@ MainFrame::RegisterHandlers( void )
     auto make_info = [this] ( const std::string& target ) {
       TtProcess::CreateInfo info( developer_.GetCurrentCompilerSettings().make_command_path_ );
       info.show_state_ = TtWindow::ShowState::HIDE;
+      info.use_standard_handles_ = true;
       info.current_directory_ = developer_.GetProjectDirectoryPath();
       info.arguments_ = "/f \"" + developer_.GetMakefilePath() + "\" " + target;
       return info;
