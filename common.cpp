@@ -122,7 +122,7 @@ IniFileOperation::LoadProjectHistory( ProjectHistory& history, unsigned int max 
   TtIniFile ini;
   TtIniSection section = ini[Tag::ProjectHistory];
   unsigned int count = section.GetInteger( Tag::Count, 0 );
-  for ( unsigned int i = 0; i < count || i <= max; ++i ) {
+  for ( unsigned int i = 0; i < count && i <= max; ++i ) {
     std::string data = section.GetString( Tag::History + TtUtility::ToStringFrom( i ) );
     if ( data.empty() ) {
       continue;
