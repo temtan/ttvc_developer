@@ -11,7 +11,7 @@
 
 
 namespace TTVCDeveloper {
-  const char* const VERSION = "1.1.1";
+  const char* const VERSION = "1.1.2";
   const char* const APPLICATION_NAME = "TTVC Delevoper";
 
   // -- CommandID --------------------------------------------------------
